@@ -1,5 +1,9 @@
 import { DataTypes, Model } from "sequelize";
-import type { InferAttributes, InferCreationAttributes } from "sequelize";
+import type {
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional,
+} from "sequelize";
 import db from "../config/db";
 
 const isSyncEnabled = false;
@@ -9,13 +13,15 @@ interface AkunModel
     InferAttributes<AkunModel>,
     InferCreationAttributes<AkunModel>
   > {
-  id: number;
+  id: CreationOptional<number>;
   FullName: string;
   Email: string;
   Password: string;
   PhoneNumber?: string;
   Alamat?: string;
   Role?: string;
+  createdAt: CreationOptional<Date>;
+  updatedAt: CreationOptional<Date>;
   isSuperAdmin: "SuperAdmin" | "Admin" | "User";
 }
 
@@ -57,10 +63,18 @@ const Akun = db.define<AkunModel>(
       defaultValue: "User",
       allowNull: false,
     },
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    },
   },
   {
     tableName: "akun",
-    timestamps: false,
+    timestamps: true,
   }
 );
 

@@ -1,14 +1,17 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { api } from "../service/ApiBackend";
 
-export default function LogoutButton() {
+export default function LogoutButton({ className = "" }) {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
+    const { ApiBackend } = api();
+    const url = ApiBackend("/api/auth/logout");
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/auth/logout",
+        url,
         {},
         {
           withCredentials: true,
@@ -32,10 +35,7 @@ export default function LogoutButton() {
   };
 
   return (
-    <button
-      className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-      onClick={handleLogout}
-    >
+    <button className={` ${className}`} onClick={handleLogout}>
       Logout
     </button>
   );

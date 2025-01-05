@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import Akun from "../models/AkunModels";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 export const LoginAkun = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -15,7 +16,8 @@ export const LoginAkun = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    if (Password !== user.Password) {
+    const isPasswordValid = await bcrypt.compare(Password, user.Password);
+    if (!isPasswordValid) {
       res.status(401).json({ message: "Password salah." });
       return;
     }
@@ -52,10 +54,10 @@ export const LoginAkun = async (req: Request, res: Response): Promise<void> => {
     let redirect = "/";
     switch (user.isSuperAdmin) {
       case "SuperAdmin":
-        redirect = "/superadmin";
+        redirect = "/superadmin/";
         break;
       case "Admin":
-        redirect = "/admin";
+        redirect = "/admin/";
         break;
       case "User":
         redirect = "/";
@@ -70,5 +72,75 @@ export const LoginAkun = async (req: Request, res: Response): Promise<void> => {
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ message: "Terjadi kesalahan server." });
+  }
+};
+
+export const postAkun = async (req: Request, res: Response): Promise<void> => {
+  const { FullName, Email, Password, PhoneNumber, Alamat, Role } = req.body;
+
+  try {
+    const existingEmail = await Akun.findOne({ where: { Email } });
+    if (existingEmail) {
+      res.status(400).json({
+        message: "Email sudah digunakan",
+      });
+      return;
+    }
+
+    const existingFullName = await Akun.findOne({ where: { FullName } });
+    if (existingFullName) {
+      res.status(400).json({
+        message: "Fullname sudah Terdaftar",
+      });
+      return;
+    }
+
+    const existingRole = await Akun.findOne({ where: { Role } });
+    if (existingRole) {
+      res.status(400).json({
+        message: "Toko sudah Terdaftar",
+      });
+      return;
+    }
+
+    const hashedPassword = await bcrypt.hash(Password, 10);
+
+    const newAkun = await Akun.create({
+      FullName,
+      Email,
+      Password: hashedPassword,
+      PhoneNumber,
+      Alamat,
+      Role,
+      isSuperAdmin: "User",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    res.status(200).json({
+      message: "Akun berhasil ditambahkan",
+      data: newAkun,
+      redirect: "/superadmin/akun",
+    });
+  } catch (error) {
+    console.error("Kesalahan saat menambahkan akun:", error);
+    res.status(500).json({
+      message: "Terjadi kesalahan pada server",
+    });
+  }
+};
+
+export const GetAllAkun = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const akun = await Akun.findAll();
+    res.status(200).json(akun);
+  } catch (error) {
+    console.error("Kesalahan saat menambahkan akun:", error);
+    res.status(500).json({
+      message: "Terjadi kesalahan pada server",
+    });
   }
 };

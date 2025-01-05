@@ -1,49 +1,25 @@
-import { useEffect } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import LogoutButton from "../../components/Logout";
+import { useLocation, Outlet } from "react-router-dom";
+import SidebarSuperAdmin from "../../components/SuperAdmin/SidebarSA";
+import { useSuperAdmin } from "../../hook/useSuperAdmin";
 
 export default function SuperAdmin() {
-  const navigate = useNavigate();
+  useSuperAdmin();
 
-  useEffect(() => {
-    const fetchAccessToken = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:8080/api/auth/access-token",
-          {
-            withCredentials: true,
-          }
-        );
-
-        console.log("Access Token Data:", response.data);
-
-        const { role, isSuperAdmin } = response.data;
-
-        if (role !== "SuperAdmin" || isSuperAdmin !== "SuperAdmin") {
-          navigate("/404");
-        }
-      } catch (err) {
-        if (axios.isAxiosError(err)) {
-          console.error(
-            "Error fetching access token:",
-            err.response?.data?.message || err.message
-          );
-        } else {
-          console.error("Unexpected error:", err);
-        }
-
-        navigate("/404");
-      }
-    };
-
-    fetchAccessToken();
-  }, [navigate]);
+  const location = useLocation();
+  const isSuperAdminHome =
+    location.pathname === "/superadmin/" || location.pathname === "/superadmin";
 
   return (
-    <main className="container mx-auto w-full min-h-[calc(100vh)] bg-gray-200 px-8">
-      <h1 className="text-3xl font-bold underline">SuperAdmin Page</h1>
-      <LogoutButton />
-    </main>
+    <SidebarSuperAdmin>
+      <main className=" w-full min-h-[calc(100vh-4.1rem)] bg-gradient-to-l from-blue-700 to-blue-500 p-8">
+        {isSuperAdminHome ? (
+          <>
+            <h1 className="text-3xl font-bold underline">SuperAdmin Page</h1>
+          </>
+        ) : (
+          <Outlet />
+        )}
+      </main>
+    </SidebarSuperAdmin>
   );
 }

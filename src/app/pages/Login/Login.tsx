@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import wave from "../../../assets/wave.svg";
-import left from "../../../assets/undraw_personal-website_kz7a.svg";
-import Logo from "../../../assets/Logo.jpeg";
+import wave from "@/assets/wave.svg";
+import left from "@/assets/undraw_personal-website_kz7a.svg";
+import Logo from "@/assets/Logo.jpeg";
 import { FaUserCircle } from "react-icons/fa";
 import { MdOutlineRemoveRedEye, MdOutlineVisibilityOff } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { api } from "../../service/ApiBackend";
 
 interface Login {
   identifier: string;
@@ -47,8 +48,9 @@ export default function Login() {
     };
 
     try {
-      const url = "http://localhost:8080/api/auth";
-      const response = await axios.post(`${url}/login`, payload, {
+      const { ApiBackend } = api();
+      const url = ApiBackend("/api/auth/login");
+      const response = await axios.post(url, payload, {
         withCredentials: true,
       });
 
