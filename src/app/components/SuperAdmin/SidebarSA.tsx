@@ -113,8 +113,8 @@ export default function SidebarSuperAdmin({
       </aside>
       <div className="flex w-full h-full">
         <section className="flex-grow overflow-auto">
-          <nav className="bg-gradient-to-l from-blue-700 to-blue-500  shadow-lg w-full border-b border-black">
-            <ul className="flex items-center md:flex-row-reverse justify-between p-3 text-white">
+          <nav className="bg-gray-100 shadow-lg w-full border-b border-black">
+            <ul className="flex items-center md:flex-row-reverse justify-between p-3 text-gray-900">
               <li className="text-sm md:mx-20 flex justify-center items-center gap-5 relative">
                 <div className="bg-gradient-to-r from-blue-500 to-blue-700 rounded-full p-2">
                   <FaUserTie className=" text-white" size={25} />

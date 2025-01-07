@@ -1,74 +1,57 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { api } from "../../../service/ApiBackend";
+import { useGetDataAkun } from "@/app/hook/useGet";
+import { useNavigate, useLocation } from "react-router-dom";
+import Swal from "sweetalert2";
 import axios from "axios";
 
-interface Akun {
-  id: string;
-  FullName: string;
-  Email: string;
-  Password: string;
-  PhoneNumber: string;
-  Alamat: string;
-  Role: string;
-}
-
-async function getAllAkun() {
-  const { ApiBackend } = api();
-  const url = ApiBackend("/api/auth/get-all-akun");
-
-  try {
-    const response = await axios.get(url, {
-      withCredentials: true,
-    });
-
-    if (response && response.status === 200) {
-      return response.data;
-    } else {
-      return [];
-    }
-  } catch (err) {
-    if (axios.isAxiosError(err)) {
-      return [];
-    } else {
-      return [];
-    }
-  }
-}
-
 export default function AkunSA() {
-  const [DataAkun, setDataAkun] = useState<Akun[]>([]);
-  const [FilteredAkun, setFilteredAkun] = useState<Akun[]>([]);
-  const [Roles, setRoles] = useState<string[]>([]);
-  const location = useLocation();
-  const navigate = useNavigate();
-  const baseurl = location.pathname;
+  const { FilteredAkun, Roles, handleAddAkun, handleSortByRole } =
+    useGetDataAkun();
+  const Navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getAllAkun();
-      setDataAkun(data);
-      setFilteredAkun(data);
+  const Location = useLocation();
 
-      const uniqueRoles = Array.from(
-        new Set(data.map((akun: Akun) => akun.Role))
-      ) as string[];
-      setRoles(uniqueRoles);
-    };
-    fetchData();
-  }, []);
-
-  const handleAddAkun = () => {
-    navigate(`${baseurl}/add`);
+  const handleEdit = (id: string) => {
+    Navigate(`${Location.pathname}/update/${id}`);
   };
 
-  const handleSortByRole = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedRole = e.target.value;
-    if (selectedRole === "") {
-      setFilteredAkun(DataAkun);
-    } else {
-      const filtered = DataAkun.filter((akun) => akun.Role === selectedRole);
-      setFilteredAkun(filtered);
+  const handleDelete = async (id: string, FullName: string) => {
+    const result = await Swal.fire({
+      title: "Konfirmasi Hapus",
+      text: `Apakah Anda yakin ingin menghapus Data Akun ${FullName}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Ya, Hapus!",
+      cancelButtonText: "Batal",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const url = `${
+          import.meta.env.VITE_Express_API_Backend
+        }/api/auth/delete-akun/${id}`;
+
+        const response = await axios.delete(url, {
+          withCredentials: true,
+        });
+
+        if (response.status === 200) {
+          await Swal.fire({
+            icon: "success",
+            title: "Berhasil",
+            text: "Data Berhasil dihapus",
+          });
+        }
+        window.location.reload();
+      } catch (err) {
+        console.error(err);
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal",
+          text: "Data gagal dihapus",
+        });
+      }
     }
   };
 
@@ -135,7 +118,7 @@ export default function AkunSA() {
               </thead>
 
               <tbody>
-                {FilteredAkun.map((akun: Akun, index: number) => (
+                {FilteredAkun.map((akun, index) => (
                   <tr key={akun.id} className="border-b border-gray-300">
                     <td className="px-6 py-3 text-center font-semibold text-lg">
                       {index + 1}
@@ -150,10 +133,16 @@ export default function AkunSA() {
                       {akun.Role}
                     </td>
                     <td className="px-6 py-3 text-center font-semibold text-lg space-x-6">
-                      <button className="p-2 bg-red-500 text-white rounded-lg">
+                      <button
+                        onClick={() => handleDelete(akun.id, akun.FullName)}
+                        className="p-2 bg-red-500 text-white rounded-lg"
+                      >
                         Hapus
                       </button>
-                      <button className="p-2 bg-blue-500 text-white rounded-lg">
+                      <button
+                        onClick={() => handleEdit(akun.id)}
+                        className="p-2 bg-blue-500 text-white rounded-lg"
+                      >
                         Edit
                       </button>
                     </td>

@@ -1,6 +1,6 @@
 import { useLocation, Outlet } from "react-router-dom";
-import SidebarSuperAdmin from "../../components/SuperAdmin/SidebarSA";
-import { useSuperAdmin } from "../../hook/useSuperAdmin";
+import SidebarSuperAdmin from "@/app/components/SuperAdmin/SidebarSA";
+import { useSuperAdmin } from "@/app/hook/useSuperAdmin";
 
 export default function SuperAdmin() {
   useSuperAdmin();
@@ -11,7 +11,7 @@ export default function SuperAdmin() {
 
   return (
     <SidebarSuperAdmin>
-      <main className=" w-full min-h-[calc(100vh-4.1rem)] bg-gradient-to-l from-blue-700 to-blue-500 p-8">
+      <main className=" w-full min-h-[calc(100vh-4.1rem)] bg-gray-100 text-gray-900 p-8 ">
         {isSuperAdminHome ? (
           <>
             <h1 className="text-3xl font-bold underline">SuperAdmin Page</h1>

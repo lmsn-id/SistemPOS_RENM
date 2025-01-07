@@ -15,6 +15,7 @@ interface AkunModel
   > {
   id: CreationOptional<number>;
   FullName: string;
+  Username: string;
   Email: string;
   Password: string;
   PhoneNumber?: string;
@@ -36,6 +37,11 @@ const Akun = db.define<AkunModel>(
     FullName: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    Username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
     },
     Email: {
       type: DataTypes.STRING,

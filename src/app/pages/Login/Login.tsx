@@ -1,87 +1,21 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 import wave from "@/assets/wave.svg";
 import left from "@/assets/undraw_personal-website_kz7a.svg";
 import Logo from "@/assets/Logo.jpeg";
 import { FaUserCircle } from "react-icons/fa";
 import { MdOutlineRemoveRedEye, MdOutlineVisibilityOff } from "react-icons/md";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import axios from "axios";
-import { api } from "../../service/ApiBackend";
-
-interface Login {
-  identifier: string;
-  Password: string;
-}
+import { useLogin } from "@/app/hook/useLogin";
 
 export default function Login() {
-  const [showPassword, setShowPassword] = useState(false);
-  const Navigate = useNavigate();
-  const [isConfirmed, setIsConfirmed] = useState(false);
-
-  const { register, handleSubmit } = useForm<Login>({
-    defaultValues: {
-      identifier: "",
-      Password: "",
-    },
-  });
-
-  const onSubmit = async (data: Login) => {
-    console.log(data);
-
-    if (!data.identifier || !data.Password) {
-      toast.error("Tolong isi semua data");
-      return;
-    }
-
-    if (!isConfirmed) {
-      toast.error("Tolong centang kotak Remember Password");
-      return;
-    }
-
-    const isEmail = /^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(data.identifier);
-    const payload = {
-      ...data,
-      isEmail,
-    };
-
-    try {
-      const { ApiBackend } = api();
-      const url = ApiBackend("/api/auth/login");
-      const response = await axios.post(url, payload, {
-        withCredentials: true,
-      });
-
-      const result = response.data;
-      if (response.status === 200) {
-        toast.success(result.message, {
-          onClose: () => {
-            Navigate(result.redirect);
-          },
-        });
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (
-          error.response &&
-          error.response.data &&
-          error.response.data.message
-        ) {
-          toast.error(error.response.data.message);
-        } else {
-          toast.error("Terjadi kesalahan saat login");
-        }
-      } else {
-        toast.error("Kesalahan tidak terduga");
-      }
-    }
-  };
-
-  const togglePassword = () => {
-    setShowPassword(!showPassword);
-  };
+  const {
+    register,
+    handleSubmit,
+    onSubmit,
+    togglePassword,
+    setIsConfirmed,
+    showPassword,
+    isConfirmed,
+  } = useLogin();
 
   const waveVariants = {
     hidden: { opacity: 0, y: -50 },

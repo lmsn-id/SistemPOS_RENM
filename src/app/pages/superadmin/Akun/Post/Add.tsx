@@ -1,58 +1,7 @@
-import { useForm } from "react-hook-form";
-import { api } from "../../../../service/ApiBackend";
-import { toast } from "react-toastify";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-interface Akun {
-  FullName: string;
-  Email: string;
-  Password: string;
-  PhoneNumber: string;
-  Alamat: string;
-  Role: string;
-}
+import { useAddAkun } from "@/app/hook/usePost";
 
 export default function AddAkun() {
-  const navigate = useNavigate();
-  const { register, handleSubmit } = useForm<Akun>({
-    defaultValues: {
-      FullName: "",
-      Email: "",
-      Password: "",
-      PhoneNumber: "",
-      Alamat: "",
-      Role: "",
-    },
-  });
-
-  const onSubmit = async (data: Akun) => {
-    console.log(data);
-
-    const { ApiBackend } = api();
-    const url = ApiBackend("/api/auth/add-akun");
-
-    try {
-      const response = await axios.post(url, data, {
-        withCredentials: true,
-      });
-
-      if (response && response.status === 200) {
-        toast.success(response.data.message, {
-          onClose: () => {
-            navigate(response.data.redirect);
-          },
-        });
-      } else {
-        toast.error(response.data.message);
-      }
-    } catch (err) {
-      if (axios.isAxiosError(err)) {
-        toast.error(err.response?.data?.message || "Kesalahan saat logout");
-      } else {
-        toast.error("Kesalahan tidak terduga");
-      }
-    }
-  };
+  const { register, handleSubmit, onSubmit } = useAddAkun();
 
   return (
     <>
@@ -67,7 +16,7 @@ export default function AddAkun() {
                 htmlFor="fullname"
                 className="block text-gray-700 text-sm font-bold mb-2"
               >
-                Full Name
+                Nama Pemilik
               </label>
               <input
                 className="shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
@@ -75,6 +24,21 @@ export default function AddAkun() {
                 type="text"
                 placeholder="Masukan Full Name"
                 {...register("FullName")}
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="username"
+                className="block text-gray-700 text-sm font-bold mb-2"
+              >
+                Username
+              </label>
+              <input
+                className="shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
+                id="username"
+                type="text"
+                placeholder="Masukan Username"
+                {...register("Username")}
               />
             </div>
             <div className="mb-4">
