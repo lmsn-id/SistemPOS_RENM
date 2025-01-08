@@ -9,7 +9,7 @@ interface GetData {
   fullName: string;
 }
 
-export const useSuperAdmin = () => {
+export const useAdmin = () => {
   const [data, setData] = useState<GetData | null>(null);
   const navigate = useNavigate();
 
@@ -17,7 +17,6 @@ export const useSuperAdmin = () => {
     const url = `${
       import.meta.env.VITE_Express_API_Backend
     }/api/auth/access-token`;
-
     const fetchAccessToken = async () => {
       try {
         const response = await axios.get(url, {
@@ -33,7 +32,7 @@ export const useSuperAdmin = () => {
           role,
         });
 
-        if (role !== "SuperAdmin" || isSuperAdmin !== "SuperAdmin") {
+        if (isSuperAdmin !== "Admin") {
           navigate("/404");
         }
       } catch (err) {

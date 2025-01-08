@@ -1,14 +1,12 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { api } from "../service/ApiBackend";
 
 export default function LogoutButton({ className = "" }) {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    const { ApiBackend } = api();
-    const url = ApiBackend("/api/auth/logout");
+    const url = `${import.meta.env.VITE_Express_API_Backend}/api/auth/logout`;
     try {
       const response = await axios.post(
         url,
@@ -21,7 +19,7 @@ export default function LogoutButton({ className = "" }) {
       if (response.status === 200) {
         toast.success(response.data.message, {
           onClose: () => {
-            navigate("/");
+            navigate(response.data.redirect);
           },
         });
       }

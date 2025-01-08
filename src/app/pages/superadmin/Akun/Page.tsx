@@ -1,10 +1,8 @@
 import { useGetDataAkun } from "@/app/hook/useGet";
 import { useNavigate, useLocation } from "react-router-dom";
-import Swal from "sweetalert2";
-import axios from "axios";
 
 export default function AkunSA() {
-  const { FilteredAkun, Roles, handleAddAkun, handleSortByRole } =
+  const { FilteredAkun, Roles, handleAddAkun, handleSortByRole, handleDelete } =
     useGetDataAkun();
   const Navigate = useNavigate();
 
@@ -12,47 +10,6 @@ export default function AkunSA() {
 
   const handleEdit = (id: string) => {
     Navigate(`${Location.pathname}/update/${id}`);
-  };
-
-  const handleDelete = async (id: string, FullName: string) => {
-    const result = await Swal.fire({
-      title: "Konfirmasi Hapus",
-      text: `Apakah Anda yakin ingin menghapus Data Akun ${FullName}?`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Ya, Hapus!",
-      cancelButtonText: "Batal",
-    });
-
-    if (result.isConfirmed) {
-      try {
-        const url = `${
-          import.meta.env.VITE_Express_API_Backend
-        }/api/auth/delete-akun/${id}`;
-
-        const response = await axios.delete(url, {
-          withCredentials: true,
-        });
-
-        if (response.status === 200) {
-          await Swal.fire({
-            icon: "success",
-            title: "Berhasil",
-            text: "Data Berhasil dihapus",
-          });
-        }
-        window.location.reload();
-      } catch (err) {
-        console.error(err);
-        await Swal.fire({
-          icon: "error",
-          title: "Gagal",
-          text: "Data gagal dihapus",
-        });
-      }
-    }
   };
 
   return (
@@ -69,7 +26,7 @@ export default function AkunSA() {
                 <select
                   name="sortByToko"
                   id="sortByToko"
-                  className="p-2 border rounded-lg bg-[#3a3086] text-white"
+                  className="p-2 border rounded-lg bg-[#3a3086] text-white w-36"
                   defaultValue={""}
                   onChange={handleSortByRole}
                 >

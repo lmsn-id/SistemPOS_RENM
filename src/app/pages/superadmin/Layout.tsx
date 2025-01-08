@@ -2,7 +2,7 @@ import { useLocation, Outlet } from "react-router-dom";
 import SidebarSuperAdmin from "@/app/components/SuperAdmin/SidebarSA";
 import { useSuperAdmin } from "@/app/hook/useSuperAdmin";
 
-export default function SuperAdmin() {
+export default function LayoutSuperAdmin() {
   useSuperAdmin();
 
   const location = useLocation();

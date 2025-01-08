@@ -76,9 +76,11 @@ export const LoginAkun = async (req: Request, res: Response): Promise<void> => {
         redirect = "/";
         break;
     }
+    const role = user.Role;
 
     res.status(200).json({
       message: "Login berhasil.",
+      role,
       accessToken,
       redirect,
     });
@@ -127,7 +129,7 @@ export const postAkun = async (req: Request, res: Response): Promise<void> => {
       PhoneNumber,
       Alamat,
       Role,
-      isSuperAdmin: "User",
+      isSuperAdmin: "Admin",
       createdAt: new Date(),
       updatedAt: new Date(),
     });
