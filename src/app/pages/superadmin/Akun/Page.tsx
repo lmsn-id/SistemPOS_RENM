@@ -14,7 +14,7 @@ export default function AkunSA() {
 
   return (
     <>
-      <div className="w-full bg-white rounded-2xl shadow-md">
+      <section className="w-full bg-white rounded-2xl shadow-md">
         <div className="p-6">
           <div className="w-full flex justify-center mb-4">
             <h1 className="text-gray-900 text-lg font-semibold">Tabel Akun</h1>
@@ -54,7 +54,7 @@ export default function AkunSA() {
 
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left text-sm text-gray-600">
-              <thead className="bg-gray-100 text-gray-700 uppercase text-xs font-medium">
+              <thead className="bg-gray-200 text-gray-700 uppercase text-xs font-medium">
                 <tr>
                   <th className="px-6 py-3 border-b border-gray-300 text-center text-lg">
                     No
@@ -76,7 +76,12 @@ export default function AkunSA() {
 
               <tbody>
                 {FilteredAkun.map((akun, index) => (
-                  <tr key={akun.id} className="border-b border-gray-300">
+                  <tr
+                    key={akun.id}
+                    className={`border-b border-gray-300 ${
+                      index % 2 === 0 ? "bg-white" : "bg-gray-100"
+                    }`}
+                  >
                     <td className="px-6 py-3 text-center font-semibold text-lg">
                       {index + 1}
                     </td>
@@ -109,7 +114,7 @@ export default function AkunSA() {
             </table>
           </div>
         </div>
-      </div>
+      </section>
     </>
   );
 }

@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 export default function Admin() {
   return (
     <>
-      <section className="p-8">
+      <section className="">
         <h1 className="text-2xl font-bold mb-4 text-gray-900">Dashboard</h1>
         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 place-items-center">
           <div className="p-4 rounded-lg shadow-md text-white bg-gradient-to-r from-blue-400 to-blue-500 flex flex-col justify-between h-full w-72 sm:w-full">

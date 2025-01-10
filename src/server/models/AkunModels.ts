@@ -13,7 +13,7 @@ interface AkunModel
     InferAttributes<AkunModel>,
     InferCreationAttributes<AkunModel>
   > {
-  id: CreationOptional<number>;
+  id: string;
   FullName: string;
   Username: string;
   Email: string;
@@ -30,8 +30,7 @@ const Akun = db.define<AkunModel>(
   "akun",
   {
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.STRING,
       primaryKey: true,
     },
     FullName: {

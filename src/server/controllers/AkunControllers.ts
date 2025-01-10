@@ -3,6 +3,7 @@ import { Sequelize } from "sequelize";
 import Akun from "../models/AkunModels";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { v4 as uuidv4 } from "uuid";
 
 export const LoginAkun = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -97,31 +98,27 @@ export const postAkun = async (req: Request, res: Response): Promise<void> => {
   try {
     const existingEmail = await Akun.findOne({ where: { Email } });
     if (existingEmail) {
-      res.status(400).json({
-        message: "Email sudah digunakan",
-      });
+      res.status(400).json({ message: "Email sudah digunakan" });
       return;
     }
 
     const existingUsername = await Akun.findOne({ where: { Username } });
     if (existingUsername) {
-      res.status(400).json({
-        message: "Username sudah Terdaftar",
-      });
+      res.status(400).json({ message: "Username sudah Terdaftar" });
       return;
     }
 
     const existingRole = await Akun.findOne({ where: { Role } });
     if (existingRole) {
-      res.status(400).json({
-        message: "Toko sudah Terdaftar",
-      });
+      res.status(400).json({ message: "Toko sudah Terdaftar" });
       return;
     }
 
+    const uniqueId = uuidv4();
     const hashedPassword = await bcrypt.hash(Password, 10);
 
     const newAkun = await Akun.create({
+      id: uniqueId,
       Username,
       FullName,
       Email,
@@ -141,9 +138,7 @@ export const postAkun = async (req: Request, res: Response): Promise<void> => {
     });
   } catch (error) {
     console.error("Kesalahan saat menambahkan akun:", error);
-    res.status(500).json({
-      message: "Terjadi kesalahan pada server",
-    });
+    res.status(500).json({ message: "Terjadi kesalahan pada server" });
   }
 };
 

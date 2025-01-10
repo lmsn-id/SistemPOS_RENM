@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import icon from "@/assets/Logo.jpeg";
 import { useLocation } from "react-router-dom";
 import LogoutButton from "../Logout";
-import { useSuperAdmin } from "../../hook/useSuperAdmin";
+import { useSuperAdmin } from "@/app/components/SuperAdmin/SuperAdminContex";
 
 interface SidebarSuperAdminProps {
   children: React.ReactNode;
@@ -21,10 +21,10 @@ export default function SidebarSuperAdmin({
   const location = useLocation();
   const baseurl = location.pathname.split("/")[1];
   const basePath = `/${baseurl}`;
-  const userData = useSuperAdmin();
+  const { userData } = useSuperAdmin();
 
   const menus = [
-    { name: "Dashboard", link: `${basePath}/`, icon: MdOutlineDashboard },
+    { name: "Dashboard", link: `${basePath}`, icon: MdOutlineDashboard },
     {
       name: "Akun",
       link: `${basePath}/akun`,
@@ -54,8 +54,9 @@ export default function SidebarSuperAdmin({
     };
   }, []);
 
-  const isActive = (path: string) => {
-    return location.pathname === path;
+  const isActive = (link: string) => {
+    const currentPath = location.pathname;
+    return currentPath === link || currentPath === `${link}/`;
   };
 
   return (

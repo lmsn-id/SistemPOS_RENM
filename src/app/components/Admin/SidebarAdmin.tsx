@@ -4,13 +4,13 @@ import { HiMenuAlt3 } from "react-icons/hi";
 import { MdOutlineDashboard, MdRestaurantMenu } from "react-icons/md";
 import { TbReportSearch } from "react-icons/tb";
 import { RiSettings4Line } from "react-icons/ri";
-import { FaUserTie } from "react-icons/fa";
+import { FaUserTie, FaBoxOpen } from "react-icons/fa";
 import { IoIosArrowForward } from "react-icons/io";
 import { Link } from "react-router-dom";
 import icon from "@/assets/Logo.jpeg";
 import { useLocation } from "react-router-dom";
 import LogoutButton from "../Logout";
-import { useAdmin } from "@/app/hook/useAdmin";
+import { useAdmin } from "./AdminContex";
 
 interface SidebarAdminProps {
   children: React.ReactNode;
@@ -20,12 +20,13 @@ export default function SidebarAdmin({ children }: SidebarAdminProps) {
   const location = useLocation();
   const baseurl = location.pathname.split("/")[1];
   const basePath = `/${baseurl}`;
-  const userData = useAdmin();
+  const { userData } = useAdmin();
 
   const menus = [
     { name: "Dashboard", link: `${basePath}`, icon: MdOutlineDashboard },
     { name: "Laporan", link: `${basePath}/laporan`, icon: TbReportSearch },
     { name: "Menu", link: `${basePath}/menu`, icon: MdRestaurantMenu },
+    { name: "Stok Barng", link: `${basePath}/stok`, icon: FaBoxOpen },
     { name: "Setting", link: `${basePath}/settings`, icon: RiSettings4Line },
   ];
 
@@ -59,8 +60,10 @@ export default function SidebarAdmin({ children }: SidebarAdminProps) {
     };
   }, []);
 
-  const isActive = (path: string) => location.pathname === path;
-
+  const isActive = (link: string) => {
+    const currentPath = location.pathname;
+    return currentPath === link || currentPath === `${link}/`;
+  };
   return (
     <>
       <div className="flex flex-col md:flex-row min-h-screen">
@@ -106,6 +109,13 @@ export default function SidebarAdmin({ children }: SidebarAdminProps) {
                       className={`whitespace-pre duration-500 ${
                         !open && "opacity-0 translate-x-28 overflow-hidden"
                       }`}
+                    >
+                      {menu.name}
+                    </h2>
+                    <h2
+                      className={`${
+                        open && "hidden"
+                      } absolute left-48 bg-white font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit`}
                     >
                       {menu.name}
                     </h2>
